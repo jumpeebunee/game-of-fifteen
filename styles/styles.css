@@ -1,1 +1,36 @@
-/*# sourceMappingURL=styles.css.map */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+* {
+  font-family: Montserrat;
+}
+
+body {
+  height: 100vh;
+  background-color: #191819;
+}
+
+.board {
+  width: 100%;
+  max-width: 545px;
+  height: 545px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 21px 22px 22px 21px;
+  background-color: black;
+  position: relative;
+  border-radius: 20px;
+}
+
+.cell {
+  width: 118px;
+  height: 118px;
+  background-color: #C8A2D6;
+  display: inline-block;
+  border-radius: 15px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 65px;
+  line-height: 79px;
+  color: #FFF;
+}/*# sourceMappingURL=styles.css.map */

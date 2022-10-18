@@ -8,6 +8,16 @@ body {
   background-color: #191819;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.puzzle-game {
+  width: 100%;
+}
+
 .board {
   width: 100%;
   max-width: 545px;
@@ -40,4 +50,20 @@ body {
 .cell-empty {
   background: transparent;
   cursor: auto;
+}
+
+.button {
+  margin-top: 30px;
+  padding: 21px 60px 20px 60px;
+  font-size: 24px;
+  line-height: 29px;
+  color: #191819;
+  background: #CFDDDB;
+  border-radius: 20px;
+  transition: all ease 0.4s;
+}
+.button:hover {
+  color: #CFDDDB;
+  outline: solid 1px #CFDDDB;
+  background: transparent;
 }/*# sourceMappingURL=styles.css.map */

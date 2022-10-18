@@ -33,6 +33,23 @@ function init() {
         },
     };
 
+    const appElements = {
+        getElement() {
+            return document.querySelector('.container');
+        },
+        restartButton() {
+            const button = document.createElement('button');
+            const gameBoard = document.querySelector('.board');
+            button.classList.add('button');
+            button.textContent = 'Restart Game';
+            button.addEventListener('click', () => board.render());
+            this.getElement().append(button);
+        },
+        render() {
+            this.restartButton();
+        },
+    };
+
     const board =  {
         getElement() {
             return document.querySelector('.puzzle-game');
@@ -40,7 +57,6 @@ function init() {
         createBoard() {
             const board = document.createElement('div');
             board.classList.add('board');
-            this.getElement().append(board);
             return board;
         },
         generateNumbers() {
@@ -53,10 +69,15 @@ function init() {
             return genereatedArray.sort(() => Math.random() - 0.5);
         },
         render() {
-            const board = this.createBoard();
-            board.innerHTML = '';
+            const puzzleGame = board.getElement();
+            const gameBoard = board.createBoard();
 
-            const cellsArray = this.generateNumbers();
+            puzzleGame.innerHTML = '';
+            puzzleGame.append(gameBoard);
+
+            gameBoard.innerHTML = '';
+
+            const cellsArray = board.generateNumbers();
 
             for (let i = 0; i < config.size; i++) {
                 for (let j = 0; j < config.size; j++) {
@@ -78,13 +99,15 @@ function init() {
                     cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
                     cell.addEventListener('click', move.checkPosition);
 
-                    board.append(cell);
+                    gameBoard.append(cell);
                 };
             };
+
         },
     };
 
     board.render();
+    appElements.render();
 };
 
 document.addEventListener('DOMContentLoaded', init);

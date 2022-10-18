@@ -33,4 +33,11 @@ body {
   font-size: 65px;
   line-height: 79px;
   color: #FFF;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.cell-empty {
+  background: transparent;
+  cursor: auto;
 }/*# sourceMappingURL=styles.css.map */

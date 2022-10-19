@@ -3,12 +3,15 @@ function init() {
     let gameTimer = 0;
     let totalMoves = 0;
     let player = new Audio('./assets/audio/audio-cell.mp3');
+    let clickSound = new Audio('./assets/audio/clickSound.mp3');
 
     let resultToWin = [];
 
     const config = {
-        size: 4,
+        size: 5,
     };  
+
+    const TOTAL_GAME_SIZES = ['3x3', '4x4', '5x5', '6x6', '7x7', '8x8'];
 
     const move = {
         checkPosition(e) {
@@ -97,7 +100,37 @@ function init() {
             return document.querySelector('.puzzle-game');
         },
         createBoard() {
+            const container = document.querySelector('.container');
+            container.classList.remove('board-very-small', 'board-small', 'board-medium', 'board-standart', 'board-large', 'board-very-large');
             const board = document.createElement('div');
+
+            switch (config.size) {
+                case 3: 
+                    board.classList.add('board-very-small');
+                    container.classList.add('board-very-small');
+                    break;
+                case 4:
+                    board.classList.add('board-small');
+                    container.classList.add('board-small');
+                    break;
+                case 5:
+                    board.classList.add('board-medium');
+                    container.classList.add('board-medium');
+                    break;
+                case 6:
+                    board.classList.add('board-standart');
+                    container.classList.add('board-standart');
+                    break;
+                case 7:
+                    board.classList.add('board-large');
+                    container.classList.add('board-large');
+                    break;
+                case 8:
+                    board.classList.add('board-very-large');
+                    container.classList.add('board-very-large');
+                    break;
+            };
+            
             board.classList.add('board');
             return board;
         },
@@ -217,9 +250,60 @@ function init() {
         },
     };
 
+    const settings = {
+        createSettings() {
+            const settings = document.createElement('div');
+            const settingHeading = document.createElement('h3');    
+            const sizeList = document.createElement('ul');
+
+            for (let key of TOTAL_GAME_SIZES) {
+                const sizeItem = document.createElement('li');
+                const sizeButton = document.createElement('button');
+
+                sizeItem.classList.add('settings-item');
+                sizeButton.classList.add('size-button');
+                if (+key[0] === config.size) sizeButton.classList.add('size-button_active');
+
+                sizeButton.addEventListener('click', this.changeSize);
+                sizeButton.textContent = key;
+                sizeButton.value = +key[0];
+
+                sizeItem.append(sizeButton);
+                sizeList.append(sizeItem);
+            };
+
+            settings.classList.add('game-settings');
+            sizeList.classList.add('settings-list');
+            settingHeading.classList.add('settings-heading');
+
+            settingHeading.textContent = 'Board size:';
+
+            settings.append(settingHeading, sizeList);
+            return settings;
+        },
+        changeSize(e) {
+            document.querySelectorAll('.size-button').forEach((item => item.classList.remove('size-button_active')));
+            e.target.classList.add('size-button_active');
+            config.size = +e.target.value;
+            board.render();
+        },
+        render() {
+            const container = document.querySelector('.container');
+            const settingsButton = document.querySelector('.settings-button');
+            settingsButton.addEventListener('click', () => {
+                clickSound.play();
+                document.querySelector('.game-settings').classList.toggle('game-settings_open');
+                document.querySelector('.wrapper').classList.toggle('wrapper_open');
+            });
+
+            container.append(this.createSettings())
+        },
+    };
+
     appElements.render();
     board.render();
     gameResults.getResultsToWin();
+    settings.render();
 };
 
 document.addEventListener('DOMContentLoaded', init);

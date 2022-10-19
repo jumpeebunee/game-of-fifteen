@@ -13,6 +13,25 @@ body {
     background-color: $black;
 }
 
+.wrapper {
+    opacity: 0;
+    visibility: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+    transition: all ease .4s;
+}
+
+.wrapper_open {
+    opacity: 1;
+    visibility: visible;
+    z-index: 20;
+}
+
 .container {
     max-width: 545px;
     margin-left: auto;
@@ -21,22 +40,97 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+}
+
+.puzzle-game__top {
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .puzzle-game {
     width: 100%;
+    position: relative;
+}
+
+.game-settings {
+    width: 100%;
+    max-width: 393px;
+    padding: 20px;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #fff;
+    border-radius: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all ease .4s;
+    z-index: 21;
+}
+
+.game-settings_open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.settings-heading {
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.settings-list {
+    display: flex;
+    margin-top: 6px;
+    gap: 14px;
+
+    button {
+        font-size: 18px;
+        line-height: 22px;
+        cursor: pointer;
+        background-color: transparent;
+    }
+}
+
+.size-button_active {
+    border-bottom: 1px solid black;
 }
 
 .board {
+    display: flex;
     width: 100%;
-    max-width: 545px;
-    height: 545px;
     margin-left: auto;
     margin-right: auto;
     padding: 21px 22px 22px 21px;
     background-color: black;
     position: relative;
     border-radius: 20px;
+}
+
+.board-very-small {
+    max-width: 417px;
+    height: 417px;
+}
+
+.board-small {
+    max-width: 545px;
+    height: 545px;
+}
+.board-medium {
+    max-width: 673px;
+    height: 673px;
+}
+.board-standart {
+    max-width: 801px;
+    height: 801px;
+}
+.board-large {
+    max-width: 929px;
+    height: 929px;
+}
+.board-very-large {
+    max-width: 1057px;
+    height: 1057px;
 }
 
 .cell {
@@ -61,19 +155,30 @@ body {
     cursor: auto;
 }
 
+.settings-button {
+    display: block;
+    width: 42px;
+    height: 42px;
+    background-image: url(../assets/img/settings.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    z-index: 22;
+}
+
 .button {
     margin-top: 30px;
     padding: 21px 60px 20px 60px;
     font-size: 24px;
     line-height: 29px;
     color: #191819;
-    background: $white;
+    background: #FFF;
     border-radius: 20px;
     transition: all ease .4s;
 
     &:hover {
-        color: $white;
-        outline: solid 1px $white;
+        color: #FFF;
+        outline: solid 1px #FFF;
         background: transparent;
     }
 }

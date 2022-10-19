@@ -2,6 +2,7 @@ function init() {
 
     let gameTimer = 0;
     let totalMoves = 0;
+    let player = new Audio('./assets/audio/audio-cell.mp3');
 
     let resultToWin = [];
 
@@ -38,6 +39,7 @@ function init() {
 
             gameResults.checkWin();
             moves.changeMove();
+            player.play()
         },
     };
 

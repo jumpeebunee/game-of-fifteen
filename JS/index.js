@@ -1,6 +1,8 @@
 function init() {
 
     let gameTimer = 0;
+    let totalMoves = 0;
+
     let resultToWin = [];
 
     const config = {
@@ -33,6 +35,9 @@ function init() {
             [to.id, from.id] = [from.id, to.id];
             [to.style.left, from.style.left] = [from.style.left, to.style.left];
             [to.style.top, from.style.top] = [from.style.top, to.style.top];
+
+            gameResults.checkWin();
+            moves.changeMove();
         },
     };
 
@@ -44,7 +49,10 @@ function init() {
             const button = document.createElement('button');
             button.classList.add('button');
             button.textContent = 'Restart Game';
-            button.addEventListener('click', () => board.render());
+            button.addEventListener('click', () =>  {
+                board.render();
+                moves.clearMoves();
+            });
             this.getElement().append(button);
         },
         timer() {
@@ -52,8 +60,8 @@ function init() {
             const timerText = document.createElement('div');
             const timerTime = document.createElement('div');
 
-            timer.classList.add('timer');
-            timerTime.classList.add('timer-timer')
+            timer.classList.add('timer', 'about-game');
+            timerTime.classList.add('timer-timer', 'about-game__text')
 
             timerText.textContent = 'Time:';
             timerTime.textContent = '00:00';
@@ -61,12 +69,24 @@ function init() {
             timer.append(timerText, timerTime);
             document.querySelector('.top-buttons').append(timer);
         },
-        changeTime() {
+        moves() {
+            const moves = document.createElement('div');
+            const movesText = document.createElement('div');
+            const movesTotal = document.createElement('div');
+            
+            moves.classList.add('moves', 'about-game');
+            movesTotal.classList.add('moves-moves', 'about-game__text');
 
+            movesText.textContent = 'Moves:';
+            movesTotal.textContent = '0';
+
+            moves.append(movesText, movesTotal);
+            document.querySelector('.top-buttons').append(moves);
         },
         render() {
             this.restartButton();
             this.timer(); 
+            this.moves();
         },
     };
 
@@ -119,7 +139,6 @@ function init() {
                     cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
                     cell.addEventListener('click', (e) => {
                         move.checkPosition(e);
-                        gameResults.checkWin();
                     });
 
                     gameBoard.append(cell);
@@ -179,6 +198,20 @@ function init() {
                 };
                 timerBlock.textContent = `${(minutes < 10) ? `0${minutes}` : minutes}:${seconds}`;
             }, 1000);
+        },
+    };
+
+    const moves = {
+        getElement() {
+            return  document.querySelector('.moves-moves');
+        },
+        changeMove() {
+            totalMoves += 1;
+            this.getElement().textContent = totalMoves;
+        },
+        clearMoves() {
+            totalMoves = 0;
+            this.getElement().textContent = totalMoves;
         },
     };
 

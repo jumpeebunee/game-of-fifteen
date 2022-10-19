@@ -79,6 +79,8 @@ body {
 }
 
 .top-buttons {
+    display: flex;
+    gap: 10px;
     width: 100%;
     margin-bottom: 10px;
     font-size: 18px;
@@ -86,7 +88,7 @@ body {
     color: #FFF;
 }
 
-.timer {
+.about-game {
     display: flex;
     width: 100%;
     max-width: 149px;
@@ -95,6 +97,6 @@ body {
     border-radius: 15px;
 }
 
-.timer-timer {
+.about-game__text {
     margin-left: 10px;
 }

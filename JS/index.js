@@ -1,6 +1,7 @@
 function init() {
 
     let gameTimer = 0;
+    let resultToWin = [];
 
     const config = {
         size: 4,
@@ -116,7 +117,10 @@ function init() {
 
                     cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
                     cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
-                    cell.addEventListener('click', move.checkPosition);
+                    cell.addEventListener('click', (e) => {
+                        move.checkPosition(e);
+                        gameResults.checkWin();
+                    });
 
                     gameBoard.append(cell);
                 };
@@ -124,6 +128,38 @@ function init() {
             timer.gameTime();
         },
     };
+
+    const gameResults = {
+        getResultsToWin() {
+            for (let i = 1; i <= (config.size ** 2) - 1; i++) {
+                resultToWin.push(i);
+            };
+            resultToWin.push(0)
+        },
+        getPlayerResult() {
+            const playerResult = document.querySelectorAll('.cell');
+            return playerResult;
+        },
+        checkWin() {
+            let findBy = '';
+            let counter = 0;
+            
+            for (let i = 0; i < config.size; i++) {
+                for (let j = 0; j < config.size; j++) {
+                    findBy = `${i}-${j}`;
+                    if (+document.getElementById(findBy).textContent !== resultToWin[counter]) {
+                        return;
+                    };
+                    counter+=1;
+                };
+            };
+            gameResults.userWin();
+        },
+        userWin() {
+            console.log('ПОБЕДА!');
+        },
+    };
+
     const timer = {
         gameTime() {
             let counter = 0;
@@ -141,13 +177,14 @@ function init() {
                     seconds = `00`;
                     minutes += 1;
                 };
-                timerBlock.textContent = `${(minutes < 10) ? `0${minutes}` : minutes}:${seconds}`
+                timerBlock.textContent = `${(minutes < 10) ? `0${minutes}` : minutes}:${seconds}`;
             }, 1000);
         },
     };
 
     appElements.render();
     board.render();
+    gameResults.getResultsToWin();
 };
 
 document.addEventListener('DOMContentLoaded', init);

@@ -1,5 +1,7 @@
 function init() {
 
+    let gameTimer = 0;
+
     const config = {
         size: 4,
     };  
@@ -39,14 +41,31 @@ function init() {
         },
         restartButton() {
             const button = document.createElement('button');
-            const gameBoard = document.querySelector('.board');
             button.classList.add('button');
             button.textContent = 'Restart Game';
             button.addEventListener('click', () => board.render());
             this.getElement().append(button);
         },
+        timer() {
+            const timer = document.createElement('div');
+            const timerText = document.createElement('div');
+            const timerTime = document.createElement('div');
+
+            timer.classList.add('timer');
+            timerTime.classList.add('timer-timer')
+
+            timerText.textContent = 'Time:';
+            timerTime.textContent = '00:00';
+
+            timer.append(timerText, timerTime);
+            document.querySelector('.top-buttons').append(timer);
+        },
+        changeTime() {
+
+        },
         render() {
             this.restartButton();
+            this.timer(); 
         },
     };
 
@@ -102,12 +121,33 @@ function init() {
                     gameBoard.append(cell);
                 };
             };
+            timer.gameTime();
+        },
+    };
+    const timer = {
+        gameTime() {
+            let counter = 0;
+            let seconds = 0;
+            let minutes = 0;
 
+            const timerBlock = document.querySelector('.timer-timer');
+            clearInterval(gameTimer);
+
+            gameTimer = setInterval(() => {
+                counter += 1;
+                seconds = (counter < 10) ? `0${counter}` : counter;
+                if (counter === 60) {
+                    counter = 0;
+                    seconds = `00`;
+                    minutes += 1;
+                };
+                timerBlock.textContent = `${(minutes < 10) ? `0${minutes}` : minutes}:${seconds}`
+            }, 1000);
         },
     };
 
-    board.render();
     appElements.render();
+    board.render();
 };
 
 document.addEventListener('DOMContentLoaded', init);

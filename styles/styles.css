@@ -9,6 +9,10 @@ body {
 }
 
 .container {
+  max-width: 545px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -66,4 +70,25 @@ body {
   color: #CFDDDB;
   outline: solid 1px #CFDDDB;
   background: transparent;
+}
+
+.top-buttons {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 18px;
+  line-height: 22px;
+  color: #FFF;
+}
+
+.timer {
+  display: flex;
+  width: 100%;
+  max-width: 149px;
+  padding: 10px 14px;
+  background-color: black;
+  border-radius: 15px;
+}
+
+.timer-timer {
+  margin-left: 10px;
 }/*# sourceMappingURL=styles.css.map */

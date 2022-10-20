@@ -1,18 +1,46 @@
 function init() {
 
     let gameTimer = 0;
-    let totalMoves = 0;
+    let totalMoves = (localStorage.getItem('moves')) ? +localStorage.getItem('moves') : 0;
+
     let player = new Audio('./assets/audio/audio-cell.mp3');
     let clickSound = new Audio('./assets/audio/clickSound.mp3');
 
     let resultToWin = [];
 
     const config = {
-        size: 5,
-    };  
+        size: 3,
+    }; 
+
+    let counter = (localStorage.getItem('counter')) ? +localStorage.getItem('counter') : 0;
+    let seconds = (localStorage.getItem('seconds')) ? +localStorage.getItem('seconds') : 0;
+    let minutes = (localStorage.getItem('minutes')) ? +localStorage.getItem('minutes') : 0;
+
+    if (localStorage.getItem('size')) config.size = +localStorage.getItem('size');
 
     const TOTAL_GAME_SIZES = ['3x3', '4x4', '5x5', '6x6', '7x7', '8x8'];
 
+    const saving = {
+        saveBoard() {
+            const currentBoard = [];
+
+            for (let i = 0; i < config.size; i++) {
+                for (let j = 0; j < config.size; j++) {
+                    let cell = +document.getElementById(`${i}-${j}`).textContent;
+                    (cell === 0) ? currentBoard.push(null) : currentBoard.push(cell);
+                };
+            };
+
+            localStorage.setItem('board', JSON.stringify(currentBoard));
+
+            localStorage.setItem('size', config.size);
+            localStorage.setItem('moves', totalMoves);
+            
+            localStorage.setItem('counter', counter);
+            localStorage.setItem('seconds', seconds);
+            localStorage.setItem('minutes', minutes);
+        },
+    };
     const move = {
         checkPosition(e) {
             const currentCell = e.target.id;
@@ -42,7 +70,7 @@ function init() {
 
             gameResults.checkWin();
             moves.changeMove();
-            player.play()
+            player.play();  
         },
     };
 
@@ -55,7 +83,8 @@ function init() {
             button.classList.add('button');
             button.textContent = 'Restart Game';
             button.addEventListener('click', () =>  {
-                board.render();
+                timer.resetTimer();
+                board.render(true);
                 moves.clearMoves();
             });
             this.getElement().append(button);
@@ -83,7 +112,7 @@ function init() {
             movesTotal.classList.add('moves-moves', 'about-game__text');
 
             movesText.textContent = 'Moves:';
-            movesTotal.textContent = '0';
+            movesTotal.textContent = totalMoves;
 
             moves.append(movesText, movesTotal);
             document.querySelector('.top-buttons').append(moves);
@@ -135,15 +164,32 @@ function init() {
             return board;
         },
         generateNumbers() {
-            const genereatedArray = [null];
+            let genereatedArray = [null];
 
             for (let i = 1; i <= (config.size ** 2) - 1; i++) {
                 genereatedArray.push(i);
             };
 
-            return genereatedArray.sort(() => Math.random() - 0.5);
+            genereatedArray = genereatedArray.sort(() => Math.random() - 0.5);
+
+            let counter = 0;
+            for (let i = 0; i < genereatedArray.length; i++) {
+                let currentCounter = 0;
+                let nestedArray = genereatedArray.concat().slice(i + 1);
+                for (let j = 0; j < nestedArray.length; j++) {
+                    if (genereatedArray[i] > nestedArray[j] && nestedArray[j] !== null) currentCounter += 1;
+                };
+                counter += currentCounter;
+                currentCounter = 0;
+            };
+            if (counter % 2 === 0) {
+                return genereatedArray
+            } else {
+                return this.generateNumbers();
+            }
+
         },
-        render() {
+        render(reset) {
             const puzzleGame = board.getElement();
             const gameBoard = board.createBoard();
 
@@ -152,7 +198,13 @@ function init() {
 
             gameBoard.innerHTML = '';
 
-            const cellsArray = board.generateNumbers();
+            let cellsArray = [];
+
+            if (reset) {
+                cellsArray = board.generateNumbers();
+            } else {
+                cellsArray = (localStorage.getItem('board')) ? JSON.parse(localStorage.getItem('board')) : board.generateNumbers();
+            };
 
             for (let i = 0; i < config.size; i++) {
                 for (let j = 0; j < config.size; j++) {
@@ -216,10 +268,6 @@ function init() {
 
     const timer = {
         gameTime() {
-            let counter = 0;
-            let seconds = 0;
-            let minutes = 0;
-
             const timerBlock = document.querySelector('.timer-timer');
             clearInterval(gameTimer);
 
@@ -233,6 +281,11 @@ function init() {
                 };
                 timerBlock.textContent = `${(minutes < 10) ? `0${minutes}` : minutes}:${seconds}`;
             }, 1000);
+        },
+        resetTimer() {
+            counter = 0;
+            minutes = 0;
+            seconds = 0;
         },
     };
 
@@ -285,11 +338,14 @@ function init() {
             document.querySelectorAll('.size-button').forEach((item => item.classList.remove('size-button_active')));
             e.target.classList.add('size-button_active');
             config.size = +e.target.value;
-            board.render();
+            board.render(true);
+            timer.resetTimer();
+            moves.clearMoves();
         },
         render() {
             const container = document.querySelector('.container');
             const settingsButton = document.querySelector('.settings-button');
+
             settingsButton.addEventListener('click', () => {
                 clickSound.play();
                 document.querySelector('.game-settings').classList.toggle('game-settings_open');
@@ -299,6 +355,8 @@ function init() {
             container.append(this.createSettings())
         },
     };
+
+    window.addEventListener('beforeunload', () => saving.saveBoard());
 
     appElements.render();
     board.render();

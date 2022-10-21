@@ -1,12 +1,15 @@
 function init() {
 
     let gameTimer = 0;
+    let isWin = false;
     let totalMoves = (localStorage.getItem('moves')) ? +localStorage.getItem('moves') : 0;
 
     let player = new Audio('./assets/audio/audio-cell.mp3');
     let clickSound = new Audio('./assets/audio/clickSound.mp3');
 
     let resultToWin = [];
+
+    let leaderboard = (localStorage.getItem('leaderboard')) ? JSON.parse(localStorage.getItem('leaderboard')) : [];
 
     const config = {
         size: 3,
@@ -31,16 +34,28 @@ function init() {
                 };
             };
 
-            localStorage.setItem('board', JSON.stringify(currentBoard));
+            if (!isWin) {
+                localStorage.setItem('board', JSON.stringify(currentBoard));
 
-            localStorage.setItem('size', config.size);
-            localStorage.setItem('moves', totalMoves);
-            
-            localStorage.setItem('counter', counter);
-            localStorage.setItem('seconds', seconds);
-            localStorage.setItem('minutes', minutes);
+                localStorage.setItem('size', config.size);
+                localStorage.setItem('moves', totalMoves);
+                
+                localStorage.setItem('counter', counter);
+                localStorage.setItem('seconds', seconds);
+                localStorage.setItem('minutes', minutes);
+            } else {
+                localStorage.removeItem('board');
+
+                localStorage.removeItem('size');
+                localStorage.removeItem('moves');
+                
+                localStorage.removeItem('counter');
+                localStorage.removeItem('seconds');
+                localStorage.removeItem('minutes');
+            }
         },
     };
+
     const move = {
         checkPosition(e) {
             const currentCell = e.target.id;
@@ -68,6 +83,10 @@ function init() {
             [to.style.left, from.style.left] = [from.style.left, to.style.left];
             [to.style.top, from.style.top] = [from.style.top, to.style.top];
 
+            if (isWin) {
+                isWin = false;
+                gameResults.resetGame();
+            };
             gameResults.checkWin();
             moves.changeMove();
             player.play();  
@@ -82,11 +101,7 @@ function init() {
             const button = document.createElement('button');
             button.classList.add('button');
             button.textContent = 'Restart Game';
-            button.addEventListener('click', () =>  {
-                timer.resetTimer();
-                board.render(true);
-                moves.clearMoves();
-            });
+            button.addEventListener('click', () =>  gameResults.resetGame());
             this.getElement().append(button);
         },
         timer() {
@@ -117,8 +132,56 @@ function init() {
             moves.append(movesText, movesTotal);
             document.querySelector('.top-buttons').append(moves);
         },
+        leaderboardButton() {
+            const leaderboards = document.createElement('div');
+
+            const button = document.createElement('button');
+            const list = document.createElement('ul');
+
+            leaderboards.classList.add('leaderboards');
+            list.classList.add('leaderboards-list');
+
+            button.classList.add('leaderboard-button');
+            button.textContent = 'Leaderboard';
+
+            leaderboards.append(button, list);
+            this.getElement().append(leaderboards);
+            this.createLeaderBoards();
+        },
+        createLeaderBoards() {
+            const list = document.querySelector('.leaderboards-list');
+            list.innerHTML = '';
+
+            let leaderboard = this.sortLeaderboards();
+
+            for (let i = 0; i < leaderboard.length; i++) {
+                const item = document.createElement('li');
+                item.classList.add('leaderboards-item');
+
+                const score = document.createElement('div');
+                const position = document.createElement('div');
+                const time = document.createElement('div');
+                const move = document.createElement('div');
+
+                score.classList.add('leaderboards-score');
+
+                position.textContent = i + 1;
+                time.textContent = leaderboard[i].time;
+                move.textContent = leaderboard[i].moves;
+
+                score.append(time, move);
+                item.append(position, score);
+
+                list.append(item);
+            };
+        },
+        sortLeaderboards() {
+            leaderboard = leaderboard.sort((a,b) => a.moves - b.moves).slice(0,10);
+            return leaderboard;
+        },
         render() {
             this.restartButton();
+            this.leaderboardButton();
             this.timer(); 
             this.moves();
         },
@@ -190,6 +253,7 @@ function init() {
 
         },
         render(reset) {
+            isWin = false;
             const puzzleGame = board.getElement();
             const gameBoard = board.createBoard();
 
@@ -256,13 +320,34 @@ function init() {
                     if (+document.getElementById(findBy).textContent !== resultToWin[counter]) {
                         return;
                     };
-                    counter+=1;
+                    counter += 1;
                 };
             };
             gameResults.userWin();
         },
+        addToLeaderboards() {
+
+        },
         userWin() {
-            console.log('ПОБЕДА!');
+            const winTitle = document.createElement('h2');
+            winTitle.classList.add('win-title');
+            winTitle.textContent = `Hooray! You solved the puzzle in ${(minutes < 10) ? `0${minutes}` : minutes}:${seconds} and ${totalMoves} moves!`;
+
+            leaderboard.push({time: `${(minutes < 10) ? `0${minutes}` : minutes}:${seconds}`, moves: totalMoves});
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+
+            appElements.createLeaderBoards();
+
+            isWin = true;
+            clearInterval(gameTimer);
+            document.querySelector('.puzzle-game__heading').prepend(winTitle);
+        },
+        resetGame() {
+            timer.resetTimer();
+            board.render(true);
+            moves.clearMoves();
+            isWin = false;
+            document.querySelector('.puzzle-game__heading').innerHTML = '';
         },
     };
 

@@ -22,6 +22,33 @@ function init() {
 
     const TOTAL_GAME_SIZES = ['3x3', '4x4', '5x5', '6x6', '7x7', '8x8'];
 
+    const createApp = {
+        createMainElements() {
+            const main = document.createElement('main');
+            const wrapper = document.createElement('div');
+            const container = document.createElement('div');
+            const gameHeading = document.createElement('div');
+            const gameTop = document.createElement('div');
+            const topButtons = document.createElement('div');
+            const settingButton = document.createElement('button');
+            const puzzleGame = document.createElement('div');
+
+            wrapper.classList.add('wrapper');
+            container.classList.add('container');
+            puzzleGame.classList.add('puzzle-game');
+            gameHeading.classList.add('puzzle-game__heading');
+            gameTop.classList.add('puzzle-game__top');
+            topButtons.classList.add('top-buttons');
+            settingButton.classList.add('settings-button');
+
+            gameTop.append(topButtons, settingButton);
+            container.append(gameHeading, gameTop, puzzleGame);
+            main.append(container);
+
+            document.body.append(wrapper, main);
+        },
+    };
+
     const appElements = {
         getElement() {
             return document.querySelector('.container');
@@ -476,6 +503,7 @@ function init() {
 
     window.addEventListener('beforeunload', () => saving.saveBoard());
 
+    createApp.createMainElements();
     appElements.render();
     board.render();
     gameResults.getResultsToWin();

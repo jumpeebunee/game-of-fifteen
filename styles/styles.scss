@@ -230,6 +230,7 @@ body {
 }
 
 .leaderboard-button {
+    display: flex;
     margin-top: 10px;
     font-size: 18px;
     line-height: 22px;
@@ -239,17 +240,34 @@ body {
     &::after {
         content: url(../assets/img/arrow.svg);
         margin-left: 10px;
+        transform: rotate(0);  
+        display: block;
+        transition: transform ease .4s;
+    }
+}
+
+.leaderboard-button_active {
+    &::after {
+        transform: rotate(-180deg);  
     }
 }
 
 .leaderboards-list {
     width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all ease .4s;
 
     li {
         display: flex;
         justify-content: space-between;
         color: #FFF;
     }
+}
+
+.leaderboards-list_active {
+    visibility: visible;
+    opacity: 1;
 }
 
 .leaderboards-score {

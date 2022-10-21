@@ -83,13 +83,15 @@ function init() {
             [to.style.left, from.style.left] = [from.style.left, to.style.left];
             [to.style.top, from.style.top] = [from.style.top, to.style.top];
 
+            moves.changeMove();
+            player.play(); 
+
             if (isWin) {
                 isWin = false;
                 gameResults.resetGame();
             };
+
             gameResults.checkWin();
-            moves.changeMove();
-            player.play();  
         },
     };
 
@@ -143,6 +145,11 @@ function init() {
 
             button.classList.add('leaderboard-button');
             button.textContent = 'Leaderboard';
+
+            button.addEventListener('click', () => {
+                list.classList.toggle('leaderboards-list_active');
+                button.classList.toggle('leaderboard-button_active');
+            });
 
             leaderboards.append(button, list);
             this.getElement().append(leaderboards);
@@ -330,6 +337,7 @@ function init() {
         },
         userWin() {
             const winTitle = document.createElement('h2');
+
             winTitle.classList.add('win-title');
             winTitle.textContent = `Hooray! You solved the puzzle in ${(minutes < 10) ? `0${minutes}` : minutes}:${seconds} and ${totalMoves} moves!`;
 
@@ -340,14 +348,19 @@ function init() {
 
             isWin = true;
             clearInterval(gameTimer);
+
             document.querySelector('.puzzle-game__heading').prepend(winTitle);
+            leaderboards.leaderboardOpen();
         },
         resetGame() {
             timer.resetTimer();
             board.render(true);
             moves.clearMoves();
+
             isWin = false;
+
             document.querySelector('.puzzle-game__heading').innerHTML = '';
+            leaderboards.leaderboardClose();
         },
     };
 
@@ -438,6 +451,23 @@ function init() {
             });
 
             container.append(this.createSettings())
+        },
+    };
+
+    const leaderboards = {
+        getElement() {
+            return {
+                list: document.querySelector('.leaderboards-list'),
+                button: document.querySelector('.leaderboard-button'),
+            };
+        },
+        leaderboardOpen() {
+            this.getElement().list.classList.add('leaderboards-list_active');
+            this.getElement().button.classList.add('leaderboard-button_active');
+        },
+        leaderboardClose() {
+            this.getElement().list.classList.remove('leaderboards-list_active');
+            this.getElement().button.classList.remove('leaderboard-button_active');
         },
     };
 

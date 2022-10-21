@@ -1,17 +1,22 @@
 function init() {
 
+    const mq = window.matchMedia('(max-width: 1120px)')
+
     let gameTimer = 0;
     let isWin = false;
     let totalMoves = (localStorage.getItem('moves')) ? +localStorage.getItem('moves') : 0;
 
     let cellSound = new Audio('./assets/audio/audio-cell.mp3');
-    let clickSound = new Audio('./assets/audio/clickSound.mp3');
+    let clickSound = new Audio('./assets/audio/clickSound.m4a');
+    let restartSound = new Audio('./assets/audio/restartSound.m4a');
+    let tabSound = new Audio('./assets/audio/tabSound.m4a');
 
     let resultToWin = [];
     let leaderboard = (localStorage.getItem('leaderboard')) ? JSON.parse(localStorage.getItem('leaderboard')) : [];
 
     const config = {
         size: 3,
+        sound: true,
     }; 
 
     let counter = (localStorage.getItem('counter')) ? +localStorage.getItem('counter') : 0;
@@ -31,7 +36,9 @@ function init() {
             const gameTop = document.createElement('div');
             const topButtons = document.createElement('div');
             const settingButton = document.createElement('button');
+            const volumeButton = document.createElement('button');
             const puzzleGame = document.createElement('div');
+            const topButtonsMenu = document.createElement('div');
 
             wrapper.classList.add('wrapper');
             container.classList.add('container');
@@ -39,9 +46,12 @@ function init() {
             gameHeading.classList.add('puzzle-game__heading');
             gameTop.classList.add('puzzle-game__top');
             topButtons.classList.add('top-buttons');
+            topButtonsMenu.classList.add('top-buttons-menu');
             settingButton.classList.add('settings-button');
+            volumeButton.classList.add('volume-button');
 
-            gameTop.append(topButtons, settingButton);
+            topButtonsMenu.append(volumeButton, settingButton)
+            gameTop.append(topButtons, topButtonsMenu);
             container.append(gameHeading, gameTop, puzzleGame);
             main.append(container);
 
@@ -59,7 +69,10 @@ function init() {
             button.classList.add('button');
             button.textContent = 'Restart Game';
 
-            button.addEventListener('click', () =>  gameResults.resetGame());
+            button.addEventListener('click', () => {
+                if (config.sound) restartSound.play();
+                gameResults.resetGame();
+            });
             this.getElement().append(button);
         },
         timer() {
@@ -103,6 +116,7 @@ function init() {
             button.textContent = 'Leaderboard';
 
             button.addEventListener('click', () => {
+                if (config.sound) tabSound.play();
                 list.classList.toggle('leaderboards-list_active');
                 button.classList.toggle('leaderboard-button_active');
             });
@@ -117,6 +131,28 @@ function init() {
 
             let leaderboard = this.sortLeaderboards();
 
+            const itemMain = document.createElement('li');
+            const scoreMain = document.createElement('div');
+            const positionMain = document.createElement('div');
+            const timeMain = document.createElement('div');
+            const moveMain = document.createElement('div');
+
+            scoreMain.classList.add('leaderboards-score');
+            itemMain.classList.add('leaderboards-item');
+
+            scoreMain.classList.add('leaderboards-score');
+            itemMain.classList.add('leaderboards-item');
+
+            positionMain.textContent = 'Position';
+            timeMain.textContent = 'Total Time';
+            moveMain.textContent = 'Total Moves';
+
+            positionMain.classList.add('leaderboards-score-position');
+
+            scoreMain.append(timeMain, moveMain);
+            itemMain.append(positionMain, scoreMain);
+            list.append(itemMain);
+
             for (let i = 0; i < leaderboard.length; i++) {
                 const item = document.createElement('li');
                 const score = document.createElement('div');
@@ -126,6 +162,7 @@ function init() {
 
                 score.classList.add('leaderboards-score');
                 item.classList.add('leaderboards-item');
+                position.classList.add('leaderboards-score-position');
 
                 position.textContent = i + 1;
                 time.textContent = leaderboard[i].time;
@@ -250,10 +287,17 @@ function init() {
                     };
 
                     cell.id = `${i}-${j}`;
-
+                    cell.style.left = `${(100 / 1920 * (22 + (118 * j) + (10 * j))).toFixed(1)}vw`;
+                    cell.style.top = `${(100 / 1920 * (22 + (118 * i) + (10 * i))).toFixed(1)}vw`;
+                    // if (mq.matches) {
+                    //     cell.style.left = `${(100 / 1920 * (22 + (118 * j) + (10 * j))).toFixed(1)}vw`;
+                    //     cell.style.top = `${(100 / 1920 * (22 + (118 * i) + (10 * i))).toFixed(1)}vw`;
+                    // } else {
+                    //     cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
+                    //     cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
+                    // }
+                    // // console.log((100 / 1120 * (22 + (118 * j) + (10 * j))).toFixed(1))
                     cell.classList.add('cell');
-                    cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
-                    cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
                     cell.addEventListener('click', (e) => {
                         move.checkPosition(e);
                     });
@@ -294,7 +338,7 @@ function init() {
             [to.style.top, from.style.top] = [from.style.top, to.style.top];
 
             moves.changeMove();
-            cellSound.play(); 
+            if (config.sound) cellSound.play(); 
 
             if (isWin) {
                 isWin = false;
@@ -444,7 +488,10 @@ function init() {
                 sizeButton.classList.add('size-button');
                 if (+key[0] === config.size) sizeButton.classList.add('size-button_active');
 
-                sizeButton.addEventListener('click', this.changeSize);
+                sizeButton.addEventListener('click', (e) => {
+                    if (config.sound) clickSound.play();
+                    this.changeSize(e);
+                });
                 sizeButton.textContent = key;
                 sizeButton.value = +key[0];
 
@@ -475,12 +522,25 @@ function init() {
             const settingsButton = document.querySelector('.settings-button');
 
             settingsButton.addEventListener('click', () => {
-                clickSound.play();
+                if (config.sound) clickSound.play();
                 document.querySelector('.game-settings').classList.toggle('game-settings_open');
                 document.querySelector('.wrapper').classList.toggle('wrapper_open');
             });
 
             container.append(this.createSettings())
+        },
+    };
+
+    const sound = {
+        getElement() {
+            return document.querySelector('.volume-button');
+        },
+        changeSound() {
+            this.getElement().addEventListener('click', () => {
+                if (config.sound) clickSound.play();
+                config.sound = !config.sound;
+                this.getElement().classList.toggle('volume-button_disabled');
+            });
         },
     };
 
@@ -508,6 +568,7 @@ function init() {
     board.render();
     gameResults.getResultsToWin();
     settings.render();
+    sound.changeSound();
 };
 
 document.addEventListener('DOMContentLoaded', init);

@@ -28,11 +28,11 @@ body {
 }
 
 .container {
-  max-width: 545px;
+  max-width: 29.3vw;
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
-  padding-bottom: 150px;
+  padding-bottom: 7.81vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,8 +41,8 @@ body {
 
 .puzzle-game__top {
   display: flex;
-  align-items: center;
   width: 100%;
+  margin-bottom: 0.52vw;
 }
 
 .puzzle-game {
@@ -52,13 +52,13 @@ body {
 
 .game-settings {
   width: 100%;
-  max-width: 393px;
-  padding: 20px;
+  max-width: 20.57vw;
+  padding: 1.04vw;
   position: absolute;
-  top: 144px;
+  top: 7.5vw;
   right: 0;
   background-color: #fff;
-  border-radius: 20px;
+  border-radius: 1.04vw;
   opacity: 0;
   visibility: hidden;
   transition: all ease 0.4s;
@@ -71,18 +71,18 @@ body {
 }
 
 .settings-heading {
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 1.04vw;
+  line-height: 1.25vw;
 }
 
 .settings-list {
   display: flex;
-  margin-top: 6px;
-  gap: 14px;
+  margin-top: 0.31vw;
+  gap: 0.73vw;
 }
 .settings-list button {
-  font-size: 18px;
-  line-height: 22px;
+  font-size: 0.94vw;
+  line-height: 1.15vw;
   cursor: pointer;
   background-color: transparent;
 }
@@ -96,54 +96,54 @@ body {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding: 21px 22px 22px 21px;
+  padding: 1.09vw 1.15vw 1.15vw 1.09vw;
   background-color: black;
   position: relative;
-  border-radius: 20px;
+  border-radius: 1.04vw;
 }
 
 .board-very-small {
-  max-width: 417px;
-  height: 417px;
+  max-width: 21.72vw;
+  height: 21.72vw;
 }
 
 .board-small {
-  max-width: 545px;
-  height: 545px;
+  max-width: 28.39vw;
+  height: 28.39vw;
 }
 
 .board-medium {
-  max-width: 673px;
-  height: 673px;
+  max-width: 35.05vw;
+  height: 35.05vw;
 }
 
 .board-standart {
-  max-width: 801px;
-  height: 801px;
+  max-width: 41.72vw;
+  height: 41.72vw;
 }
 
 .board-large {
-  max-width: 929px;
-  height: 929px;
+  max-width: 48.39vw;
+  height: 48.39vw;
 }
 
 .board-very-large {
-  max-width: 1057px;
-  height: 1057px;
+  max-width: 55.05vw;
+  height: 55.05vw;
 }
 
 .cell {
-  width: 118px;
-  height: 118px;
+  width: 6.15vw;
+  height: 6.15vw;
   background-color: #C8A2D6;
   display: inline-block;
-  border-radius: 15px;
+  border-radius: 0.78vw;
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 65px;
-  line-height: 79px;
+  font-size: 3.39vw;
+  line-height: 4.11vw;
   color: #FFF;
   cursor: pointer;
   transition: all 0.4s ease;
@@ -156,8 +156,8 @@ body {
 
 .settings-button {
   display: block;
-  width: 42px;
-  height: 42px;
+  width: 2.19vw;
+  height: 2.19vw;
   background-image: url(../assets/img/settings.svg);
   background-size: contain;
   background-repeat: no-repeat;
@@ -165,14 +165,54 @@ body {
   z-index: 22;
 }
 
+.volume-button {
+  display: block;
+  width: 2.03vw;
+  height: 1.98vw;
+  background-image: url(../assets/img/sound.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  z-index: 22;
+  position: relative;
+}
+.volume-button::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0.21vw;
+  background-color: #FFF;
+  left: 0;
+  transform: rotate(50deg);
+  opacity: 0;
+  visibility: hidden;
+  transition: all ease 0.4s;
+}
+
+.volume-button_disabled {
+  position: relative;
+}
+.volume-button_disabled::after {
+  content: "";
+  opacity: 1;
+  visibility: visible;
+}
+
+.top-buttons-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.52vw;
+  z-index: 23;
+}
+
 .button {
-  margin-top: 30px;
-  padding: 21px 60px 20px 60px;
-  font-size: 24px;
-  line-height: 29px;
+  margin-top: 1.56vw;
+  padding: 1.09vw 3.13vw 1.04vw 3.13vw;
+  font-size: 1.25vw;
+  line-height: 1.51vw;
   color: #191819;
   background: #FFF;
-  border-radius: 20px;
+  border-radius: 1.04vw;
   transition: all ease 0.4s;
 }
 .button:hover {
@@ -183,38 +223,37 @@ body {
 
 .top-buttons {
   display: flex;
-  gap: 10px;
+  gap: 0.52vw;
   width: 100%;
-  margin-bottom: 10px;
-  font-size: 18px;
-  line-height: 22px;
+  font-size: 0.94vw;
+  line-height: 1.15vw;
   color: #FFF;
 }
 
 .about-game {
   display: flex;
   width: 100%;
-  max-width: 149px;
-  padding: 10px 14px;
+  max-width: 7.76vw;
+  padding: 0.52vw 0.73vw;
   background-color: black;
-  border-radius: 15px;
+  border-radius: 0.78vw;
 }
 
 .about-game__text {
-  margin-left: 10px;
+  margin-left: 0.52vw;
 }
 
 .puzzle-game__heading {
   display: block;
   flex-shrink: 0;
   width: 100%;
-  height: 62px;
-  margin-bottom: 30px;
+  height: 3.23vw;
+  margin-bottom: 1.56vw;
 }
 
 .win-title {
   width: 100%;
-  font-size: 24px;
+  font-size: 1.25vw;
   line-height: 130.9%;
   color: #FFFFFF;
 }
@@ -228,17 +267,24 @@ body {
 
 .leaderboard-button {
   display: flex;
-  margin-top: 10px;
-  font-size: 18px;
-  line-height: 22px;
+  margin-top: 0.52vw;
+  font-size: 0.94vw;
+  line-height: 1.15vw;
   color: #FFFFFF;
   background-color: transparent;
+  display: flex;
+  align-items: center;
 }
 .leaderboard-button::after {
-  content: url(../assets/img/arrow.svg);
-  margin-left: 10px;
+  content: "";
+  width: 0.73vw;
+  height: 0.42vw;
+  margin-left: 0.52vw;
+  background-image: url(../assets/img/arrow.svg);
   transform: rotate(0);
   display: block;
+  background-repeat: no-repeat;
+  background-size: contain;
   transition: transform ease 0.4s;
 }
 
@@ -248,6 +294,7 @@ body {
 
 .leaderboards-list {
   width: 100%;
+  margin-top: 2.08vw;
   opacity: 0;
   visibility: hidden;
   transition: all ease 0.4s;
@@ -265,5 +312,19 @@ body {
 
 .leaderboards-score {
   display: flex;
-  gap: 10px;
+  gap: 0.52vw;
+}
+.leaderboards-score div {
+  width: 4.95vw;
+  text-align: left;
+}
+
+.leaderboards-item:not(:last-child) {
+  margin-bottom: 0.52vw;
+}
+
+.leaderboards-score-position {
+  width: 100%;
+  max-width: 4.43vw;
+  text-align: center;
 }/*# sourceMappingURL=styles.css.map */

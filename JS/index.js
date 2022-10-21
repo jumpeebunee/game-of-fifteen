@@ -4,11 +4,10 @@ function init() {
     let isWin = false;
     let totalMoves = (localStorage.getItem('moves')) ? +localStorage.getItem('moves') : 0;
 
-    let player = new Audio('./assets/audio/audio-cell.mp3');
+    let cellSound = new Audio('./assets/audio/audio-cell.mp3');
     let clickSound = new Audio('./assets/audio/clickSound.mp3');
 
     let resultToWin = [];
-
     let leaderboard = (localStorage.getItem('leaderboard')) ? JSON.parse(localStorage.getItem('leaderboard')) : [];
 
     const config = {
@@ -23,86 +22,16 @@ function init() {
 
     const TOTAL_GAME_SIZES = ['3x3', '4x4', '5x5', '6x6', '7x7', '8x8'];
 
-    const saving = {
-        saveBoard() {
-            const currentBoard = [];
-
-            for (let i = 0; i < config.size; i++) {
-                for (let j = 0; j < config.size; j++) {
-                    let cell = +document.getElementById(`${i}-${j}`).textContent;
-                    (cell === 0) ? currentBoard.push(null) : currentBoard.push(cell);
-                };
-            };
-
-            if (!isWin) {
-                localStorage.setItem('board', JSON.stringify(currentBoard));
-
-                localStorage.setItem('size', config.size);
-                localStorage.setItem('moves', totalMoves);
-                
-                localStorage.setItem('counter', counter);
-                localStorage.setItem('seconds', seconds);
-                localStorage.setItem('minutes', minutes);
-            } else {
-                localStorage.removeItem('board');
-
-                localStorage.removeItem('size');
-                localStorage.removeItem('moves');
-                
-                localStorage.removeItem('counter');
-                localStorage.removeItem('seconds');
-                localStorage.removeItem('minutes');
-            }
-        },
-    };
-
-    const move = {
-        checkPosition(e) {
-            const currentCell = e.target.id;
-
-            const currentI = +currentCell.split('-')[0];
-            const currentJ = +currentCell.split('-')[1];
-
-            const checkLeft = document.getElementById(`${currentI}-${currentJ - 1}`);
-            const checkRight = document.getElementById(`${currentI}-${currentJ + 1}`);
-            const checkTop = document.getElementById(`${currentI - 1}-${currentJ}`);
-            const checkBottom = document.getElementById(`${currentI + 1}-${currentJ}`);
-
-            if (checkLeft && checkLeft.dataset.isEmpty)  {
-                move.nextPosition(checkLeft, e.target);
-            } else if (checkRight && checkRight.dataset.isEmpty) {
-                move.nextPosition(checkRight, e.target);
-            } else if (checkTop && checkTop.dataset.isEmpty) {
-                move.nextPosition(checkTop, e.target);
-            } else if (checkBottom && checkBottom.dataset.isEmpty) {
-                move.nextPosition(checkBottom, e.target);
-            }
-        },
-        nextPosition(to, from) {
-            [to.id, from.id] = [from.id, to.id];
-            [to.style.left, from.style.left] = [from.style.left, to.style.left];
-            [to.style.top, from.style.top] = [from.style.top, to.style.top];
-
-            moves.changeMove();
-            player.play(); 
-
-            if (isWin) {
-                isWin = false;
-                gameResults.resetGame();
-            };
-
-            gameResults.checkWin();
-        },
-    };
-
     const appElements = {
         getElement() {
             return document.querySelector('.container');
         },
         restartButton() {
             const button = document.createElement('button');
+
             button.classList.add('button');
             button.textContent = 'Restart Game';
+
             button.addEventListener('click', () =>  gameResults.resetGame());
             this.getElement().append(button);
         },
@@ -163,14 +92,13 @@ function init() {
 
             for (let i = 0; i < leaderboard.length; i++) {
                 const item = document.createElement('li');
-                item.classList.add('leaderboards-item');
-
                 const score = document.createElement('div');
                 const position = document.createElement('div');
                 const time = document.createElement('div');
                 const move = document.createElement('div');
 
                 score.classList.add('leaderboards-score');
+                item.classList.add('leaderboards-item');
 
                 position.textContent = i + 1;
                 time.textContent = leaderboard[i].time;
@@ -178,7 +106,6 @@ function init() {
 
                 score.append(time, move);
                 item.append(position, score);
-
                 list.append(item);
             };
         },
@@ -200,9 +127,10 @@ function init() {
         },
         createBoard() {
             const container = document.querySelector('.container');
-            container.classList.remove('board-very-small', 'board-small', 'board-medium', 'board-standart', 'board-large', 'board-very-large');
             const board = document.createElement('div');
 
+            container.classList.remove('board-very-small', 'board-small', 'board-medium', 'board-standart', 'board-large', 'board-very-large');
+        
             switch (config.size) {
                 case 3: 
                     board.classList.add('board-very-small');
@@ -229,7 +157,7 @@ function init() {
                     container.classList.add('board-very-large');
                     break;
             };
-            
+
             board.classList.add('board');
             return board;
         },
@@ -242,32 +170,37 @@ function init() {
 
             genereatedArray = genereatedArray.sort(() => Math.random() - 0.5);
 
+            // validation
+
             let counter = 0;
+            
             for (let i = 0; i < genereatedArray.length; i++) {
-                let currentCounter = 0;
+                let numberCounter = 0;
                 let nestedArray = genereatedArray.concat().slice(i + 1);
                 for (let j = 0; j < nestedArray.length; j++) {
-                    if (genereatedArray[i] > nestedArray[j] && nestedArray[j] !== null) currentCounter += 1;
+                    if (genereatedArray[i] > nestedArray[j] && nestedArray[j] !== null) numberCounter += 1;
                 };
-                counter += currentCounter;
-                currentCounter = 0;
+                counter += numberCounter;
+                numberCounter = 0;
             };
+
             if (counter % 2 === 0) {
                 return genereatedArray
             } else {
                 return this.generateNumbers();
-            }
+            };
 
         },
         render(reset) {
             isWin = false;
+
             const puzzleGame = board.getElement();
             const gameBoard = board.createBoard();
 
             puzzleGame.innerHTML = '';
-            puzzleGame.append(gameBoard);
-
             gameBoard.innerHTML = '';
+
+            puzzleGame.append(gameBoard);
 
             let cellsArray = [];
 
@@ -280,8 +213,6 @@ function init() {
             for (let i = 0; i < config.size; i++) {
                 for (let j = 0; j < config.size; j++) {
                     const cell = document.createElement('div');
-                    cell.classList.add('cell');
-
                     const cellNumber = cellsArray.shift();
 
                     if (cellNumber === null) {
@@ -293,6 +224,7 @@ function init() {
 
                     cell.id = `${i}-${j}`;
 
+                    cell.classList.add('cell');
                     cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
                     cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
                     cell.addEventListener('click', (e) => {
@@ -302,15 +234,57 @@ function init() {
                     gameBoard.append(cell);
                 };
             };
+
             timer.gameTime();
+        },
+    };
+
+    const move = {
+        checkPosition(e) {
+            const currentCell = e.target.id;
+
+            const currentI = +currentCell.split('-')[0];
+            const currentJ = +currentCell.split('-')[1];
+
+            const checkLeft = document.getElementById(`${currentI}-${currentJ - 1}`);
+            const checkRight = document.getElementById(`${currentI}-${currentJ + 1}`);
+            const checkTop = document.getElementById(`${currentI - 1}-${currentJ}`);
+            const checkBottom = document.getElementById(`${currentI + 1}-${currentJ}`);
+
+            if (checkLeft && checkLeft.dataset.isEmpty)  {
+                move.nextPosition(checkLeft, e.target);
+            } else if (checkRight && checkRight.dataset.isEmpty) {
+                move.nextPosition(checkRight, e.target);
+            } else if (checkTop && checkTop.dataset.isEmpty) {
+                move.nextPosition(checkTop, e.target);
+            } else if (checkBottom && checkBottom.dataset.isEmpty) {
+                move.nextPosition(checkBottom, e.target);
+            }
+        },
+        nextPosition(to, from) {
+            [to.id, from.id] = [from.id, to.id];
+            [to.style.left, from.style.left] = [from.style.left, to.style.left];
+            [to.style.top, from.style.top] = [from.style.top, to.style.top];
+
+            moves.changeMove();
+            cellSound.play(); 
+
+            if (isWin) {
+                isWin = false;
+                gameResults.resetGame();
+            };
+            gameResults.checkWin();
         },
     };
 
     const gameResults = {
         getResultsToWin() {
+            resultToWin = [];
+            
             for (let i = 1; i <= (config.size ** 2) - 1; i++) {
                 resultToWin.push(i);
             };
+            
             resultToWin.push(0)
         },
         getPlayerResult() {
@@ -324,16 +298,11 @@ function init() {
             for (let i = 0; i < config.size; i++) {
                 for (let j = 0; j < config.size; j++) {
                     findBy = `${i}-${j}`;
-                    if (+document.getElementById(findBy).textContent !== resultToWin[counter]) {
-                        return;
-                    };
+                    if (+document.getElementById(findBy).textContent !== resultToWin[counter]) return;
                     counter += 1;
                 };
             };
             gameResults.userWin();
-        },
-        addToLeaderboards() {
-
         },
         userWin() {
             const winTitle = document.createElement('h2');
@@ -361,6 +330,39 @@ function init() {
 
             document.querySelector('.puzzle-game__heading').innerHTML = '';
             leaderboards.leaderboardClose();
+        },
+    };
+
+    const saving = {
+        saveBoard() {
+            const currentBoard = [];
+
+            for (let i = 0; i < config.size; i++) {
+                for (let j = 0; j < config.size; j++) {
+                    let cell = +document.getElementById(`${i}-${j}`).textContent;
+                    (cell === 0) ? currentBoard.push(null) : currentBoard.push(cell);
+                };
+            };
+
+            if (!isWin) {
+                localStorage.setItem('board', JSON.stringify(currentBoard));
+
+                localStorage.setItem('size', config.size);
+                localStorage.setItem('moves', totalMoves);
+                
+                localStorage.setItem('counter', counter);
+                localStorage.setItem('seconds', seconds);
+                localStorage.setItem('minutes', minutes);
+            } else {
+                localStorage.removeItem('board');
+
+                localStorage.removeItem('size');
+                localStorage.removeItem('moves');
+                
+                localStorage.removeItem('counter');
+                localStorage.removeItem('seconds');
+                localStorage.removeItem('minutes');
+            };
         },
     };
 
@@ -436,6 +438,7 @@ function init() {
             document.querySelectorAll('.size-button').forEach((item => item.classList.remove('size-button_active')));
             e.target.classList.add('size-button_active');
             config.size = +e.target.value;
+            gameResults.getResultsToWin();
             board.render(true);
             timer.resetTimer();
             moves.clearMoves();

@@ -282,22 +282,34 @@ function init() {
                     if (cellNumber === null) {
                         cell.classList.add('cell-empty');
                         cell.dataset.isEmpty = 'empty';
+                        
+                        cell.ondragover = allowDrop;
+                        cell.ondrop = drop;
+
+                        const allowDrop = (e) => e.preventDefault();
+                        const drop = (e) => move.checkDragable(e.dataTransfer.getData('id'));
+
                     } else {
                         cell.textContent = cellNumber;
                     };
 
                     cell.id = `${i}-${j}`;
-                    cell.style.left = `${(100 / 1920 * (22 + (118 * j) + (10 * j))).toFixed(1)}vw`;
-                    cell.style.top = `${(100 / 1920 * (22 + (118 * i) + (10 * i))).toFixed(1)}vw`;
-                    // if (mq.matches) {
-                    //     cell.style.left = `${(100 / 1920 * (22 + (118 * j) + (10 * j))).toFixed(1)}vw`;
-                    //     cell.style.top = `${(100 / 1920 * (22 + (118 * i) + (10 * i))).toFixed(1)}vw`;
-                    // } else {
-                    //     cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
-                    //     cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
-                    // }
-                    // // console.log((100 / 1120 * (22 + (118 * j) + (10 * j))).toFixed(1))
+
+                    if (mq.matches) {
+                        cell.style.left = `${(100 / 1078 * (22 + (100 * j) + (10 * j))).toFixed(1)}vw`;
+                        cell.style.top = `${(100 / 1078 * (22 + (100 * i) + (10 * i))).toFixed(1)}vw`;
+                    } else {
+                        cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
+                        cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
+                    };
+                    
                     cell.classList.add('cell');
+
+                    cell.draggable = true;
+                    cell.ondragstart = drag;
+
+                    const drag = (e) => e.dataTransfer.setData('id', e.target.id);
+
                     cell.addEventListener('click', (e) => {
                         move.checkPosition(e);
                     });
@@ -311,6 +323,29 @@ function init() {
     };
 
     const move = {
+        checkDragable(id) {
+            currentCell = id;
+
+            const currentI = +currentCell.split('-')[0];
+            const currentJ = +currentCell.split('-')[1];
+
+            const checkLeft = document.getElementById(`${currentI}-${currentJ - 1}`);
+            const checkRight = document.getElementById(`${currentI}-${currentJ + 1}`);
+            const checkTop = document.getElementById(`${currentI - 1}-${currentJ}`);
+            const checkBottom = document.getElementById(`${currentI + 1}-${currentJ}`);
+
+            if (checkLeft && checkLeft.dataset.isEmpty)  {
+                move.nextPosition(checkLeft, document.getElementById(id));
+            } else if (checkRight && checkRight.dataset.isEmpty) {
+                move.nextPosition(checkRight, document.getElementById(id));
+            } else if (checkTop && checkTop.dataset.isEmpty) {
+                move.nextPosition(checkTop, document.getElementById(id));
+            } else if (checkBottom && checkBottom.dataset.isEmpty) {
+                move.nextPosition(checkBottom, document.getElementById(id));
+            };
+
+            
+        },
         checkPosition(e) {
             const currentCell = e.target.id;
 
@@ -331,6 +366,7 @@ function init() {
             } else if (checkBottom && checkBottom.dataset.isEmpty) {
                 move.nextPosition(checkBottom, e.target);
             }
+            console.log(e.target)
         },
         nextPosition(to, from) {
             [to.id, from.id] = [from.id, to.id];
@@ -569,6 +605,17 @@ function init() {
     gameResults.getResultsToWin();
     settings.render();
     sound.changeSound();
+
+    const mediaQuery = window.matchMedia('(max-width: 1078px)')
+    function handleTabletChange(e) {
+      if (e.matches) {
+        gameResults.resetGame();
+      } else {
+        gameResults.resetGame();
+      };
+    };
+    mediaQuery.addListener(handleTabletChange)
+    handleTabletChange(mediaQuery)
 };
 
 document.addEventListener('DOMContentLoaded', init);

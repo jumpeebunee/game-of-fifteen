@@ -282,12 +282,12 @@ function init() {
                     if (cellNumber === null) {
                         cell.classList.add('cell-empty');
                         cell.dataset.isEmpty = 'empty';
-                        
-                        cell.ondragover = allowDrop;
-                        cell.ondrop = drop;
 
                         const allowDrop = (e) => e.preventDefault();
                         const drop = (e) => move.checkDragable(e.dataTransfer.getData('id'));
+
+                        cell.ondragover = allowDrop;
+                        cell.ondrop = drop;
 
                     } else {
                         cell.textContent = cellNumber;
@@ -305,10 +305,10 @@ function init() {
                     
                     cell.classList.add('cell');
 
+                    const drag = (e) => e.dataTransfer.setData('id', e.target.id);
+
                     cell.draggable = true;
                     cell.ondragstart = drag;
-
-                    const drag = (e) => e.dataTransfer.setData('id', e.target.id);
 
                     cell.addEventListener('click', (e) => {
                         move.checkPosition(e);

@@ -315,7 +315,7 @@ body {
   gap: 10px;
 }
 .leaderboards-score div {
-  width: 95px;
+  width: 106px;
   text-align: left;
 }
 
@@ -335,7 +335,7 @@ body {
 
 @media (max-width: 1078px) {
   .container {
-    max-width: 50.56vw;
+    max-width: 28.39vw;
     margin-top: 4.64vw;
     padding-bottom: 13.91vw;
   }
@@ -365,8 +365,8 @@ body {
     border-radius: 1.86vw;
   }
   .board-very-small {
-    max-width: 33.77vw;
-    height: 33.77vw;
+    max-width: 38.68vw;
+    height: 38.68vw;
   }
   .board-small {
     max-width: 43.97vw;
@@ -389,11 +389,11 @@ body {
     height: 84.79vw;
   }
   .cell {
-    width: 9.28vw;
-    height: 9.28vw;
+    width: 10.95vw;
+    height: 10.95vw;
     border-radius: 0.78vw;
-    font-size: 3.39vw;
-    line-height: 4.11vw;
+    font-size: 6.03vw;
+    line-height: 7.33vw;
   }
   .settings-button {
     width: 3.92vw;
@@ -455,7 +455,7 @@ body {
     gap: 0.93vw;
   }
   .leaderboards-score div {
-    width: 8.86vw;
+    width: 9.9vw;
   }
   .leaderboards-item {
     font-size: 1.68vw;

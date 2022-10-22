@@ -1,6 +1,6 @@
 function init() {
 
-    const mq = window.matchMedia('(max-width: 1120px)')
+    const mq = window.matchMedia('(max-width: 1078px)')
 
     let gameTimer = 0;
     let isWin = false;
@@ -296,8 +296,8 @@ function init() {
                     cell.id = `${i}-${j}`;
 
                     if (mq.matches) {
-                        cell.style.left = `${(100 / 1078 * (22 + (100 * j) + (10 * j))).toFixed(1)}vw`;
-                        cell.style.top = `${(100 / 1078 * (22 + (100 * i) + (10 * i))).toFixed(1)}vw`;
+                        cell.style.left = `${(100 / 1078 * (22 + (118 * j) + (10 * j))).toFixed(1)}vw`;
+                        cell.style.top = `${(100 / 1078 * (22 + (118 * i) + (10 * i))).toFixed(1)}vw`;
                     } else {
                         cell.style.left = `${22 + (118 * j) + (10 * j)}px`;
                         cell.style.top = `${22 + (118 * i) + (10 * i)}px`;
@@ -366,7 +366,6 @@ function init() {
             } else if (checkBottom && checkBottom.dataset.isEmpty) {
                 move.nextPosition(checkBottom, e.target);
             }
-            console.log(e.target)
         },
         nextPosition(to, from) {
             [to.id, from.id] = [from.id, to.id];
